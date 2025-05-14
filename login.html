@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Sign Up</title>
+   <link rel="icon" type="image/x-icon" href="assets/Logo Rate Flix Id.jpg" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #682405, #2e1504);
+      color: #000000;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box {
+      background: #b9815c;
+      padding: 40px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(206, 203, 203, 0.5);
+    }
+
+    .form-control {
+      background-color: #fff6f6;
+      border: none;
+      color: #4d4d4d;
+    }
+
+    .form-control:focus {
+      background-color: #9c9c9c;
+    }
+
+    .btn-yellow {
+      background-color: #c7bfa6;
+      border: none;
+      color: #000;
+    }
+
+    .btn-yellow:hover {
+      background-color: #6d6d6d;
+    }
+
+    .toggle-link {
+      color: #bebdba;
+      cursor: pointer;
+    }
+
+    .message {
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h3 class="text-center mb-4" id="formTitle">Login</h3>
+
+    <!-- Form Login & Sign Up -->
+    <div id="form">
+      <div class="mb-3">
+        <input type="text" id="username" class="form-control" placeholder="Username">
+      </div>
+      <div class="mb-3">
+        <input type="password" id="password" class="form-control" placeholder="Password">
+      </div>
+      <div class="d-grid">
+        <button class="btn btn-yellow" onclick="handleSubmit()" id="submitBtn">Login</button>
+      </div>
+      <div class="text-center mt-3">
+        <span id="toggleText">Belum punya akun? </span>
+        <span class="toggle-link" onclick="toggleForm()">Sign Up</span>
+      </div>
+      <div class="text-center message" id="message"></div>
+    </div>
+  </div>
+
+  <script>
+    let isLogin = true;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+      document.getElementById("formTitle").textContent = isLogin ? "Login" : "Sign Up";
+      document.getElementById("submitBtn").textContent = isLogin ? "Login" : "Sign Up";
+      document.getElementById("toggleText").textContent = isLogin ? "Belum punya akun? " : "Sudah punya akun? ";
+      document.querySelector(".toggle-link").textContent = isLogin ? "Sign Up" : "Login";
+      document.getElementById("message").textContent = "";
+    }
+
+    function handleSubmit() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const message = document.getElementById("message");
+
+      if (username === "" || password === "") {
+        message.style.color = "tomato";
+        message.textContent = "Mohon isi semua kolom.";
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || {};
+
+      if (isLogin) {
+        // LOGIN
+        if (users[username] && users[username] === password) {
+          message.style.color = "lightgreen";
+          message.textContent = "Login berhasil!";
+          setTimeout(() => {
+            window.location.href = "home.html"; // Ganti sesuai halaman tujuan
+          }, 1000);
+        } else {
+          message.style.color = "tomato";
+          message.textContent = "Username atau password salah!";
+        }
+      } else {
+        // SIGN UP
+        if (users[username]) {
+          message.style.color = "tomato";
+          message.textContent = "Username sudah digunakan!";
+        } else {
+          users[username] = password;
+          localStorage.setItem("users", JSON.stringify(users));
+          message.style.color = "lightgreen";
+          message.textContent = "Sign up berhasil! Silakan login.";
+          toggleForm();
+        }
+      }
+    }
+  </script>
+</body>
+</html>
